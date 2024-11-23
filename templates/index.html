@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculadora de IP para redes. Calcula red, broadcast, rango de hosts, clase de una dirección IP y si es pública o privada.">
+    <meta name="keywords" content="Calculadora IP, redes, IP address, máscara, CIDR, networking">
+    <meta name="author" content="signoli">
+    <title>Calculadora de IP</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background: #007BFF;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        main {
+            padding: 1rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        form {
+            margin: 1rem auto;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result {
+            margin: 1rem auto;
+            max-width: 750px;
+        }
+
+        input[type="text"], 
+        input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #007BFF;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #007BFF;
+            color: white;
+        }
+
+        footer {
+	        position: fixed;
+  	        bottom: 0;
+  	        width: 100%;
+  	        text-align: center;
+  	        margin-top: 2rem;
+  	        background: #333;
+  	        color: white;
+        }
+
+        footer a {
+            color:white;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+        	text-decoration: none;
+            color: #007BFF;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Calculadora de IP</h1>
+        <p>Calcula red, broadcast, rango de hosts, clase de una dirección IP y si es pública o privada.</p>
+    </header>
+    <main>
+        <section>
+            <form method="POST" action="/calcular">
+                <label for="ip">Dirección IP:</label>
+                <input type="text" id="ip" name="ip" placeholder="Ejemplo: 192.168.1.1" required>
+                <label for="mascara">Máscara (CIDR):</label>
+                <input type="number" id="mascara" name="mascara" placeholder="Ejemplo: 24" min="0" max="32" required>
+                <button type="submit">Calcular</button>
+            </form>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            {% if resultado %}
+                <section class="result">
+                    <h2>Resultados</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dirección IP</td>
+                                <td>{{ resultado.address }}</td>
+                            </tr>
+                            <tr>
+                                <td>Máscara</td>
+                                <td>{{ resultado.netmask }}</td>
+                            </tr>
+                            <tr>
+                                <td>Wildcard</td>
+                                <td>{{ resultado.wildcard }}</td>
+                            </tr>
+                            <tr>
+                                <td>Red</td>
+                                <td>{{ resultado.network }}</td>
+                            </tr>
+                            <tr>
+                                <td>Broadcast</td>
+                                <td>{{ resultado.broadcast }}</td>
+                            </tr>
+                            <tr>
+                                <td>Host Mínimo</td>
+                                <td>{{ resultado.host_min }}</td>
+                            </tr>
+                            <tr>
+                                <td>Host Máximo</td>
+                                <td>{{ resultado.host_max }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total de Hosts</td>
+                                <td>{{ resultado.hosts_count }}</td>
+                            </tr>
+                            <tr>
+                                <td>Clase</td>
+                                <td>{{ resultado.class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tipo</td>
+                                <td>{{ resultado.es_privada }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <div class="actions">
+                    <a href="/" style="text-decoration: none;">
+                        <button type="button">Nueva consulta</button>
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+    <footer>
+        <p>Consíguelo en <a href="https://github.com/signoli" target="_blank">Github /signoli</a></p>
+    </footer>
+</body>
+</html>
+
